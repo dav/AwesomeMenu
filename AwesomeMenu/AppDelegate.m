@@ -34,7 +34,7 @@
     AwesomeMenuItem *starMenuItem4 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Four"];
     AwesomeMenuItem *starMenuItem5 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Five"];
     AwesomeMenuItem *starMenuItem6 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Six"];
-    AwesomeMenuItem *starMenuItem7 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Seven"];
+    AwesomeMenuItem *starMenuItem7 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:nil];
     AwesomeMenuItem *starMenuItem8 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Eight"];
     AwesomeMenuItem *starMenuItem9 = [AwesomeMenuItem menuItemWithImage:storyMenuItemImage  highlightedImage:storyMenuItemImagePressed  ContentImage:starImage highlightedContentImage:nil title:@"Number Nine"];
   
