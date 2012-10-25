@@ -269,7 +269,9 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         _isAnimating = YES;
     }
 }
+
 #pragma mark - private methods
+
 - (void)_expand
 {
 	
@@ -288,9 +290,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:expandRotation],[NSNumber numberWithFloat:0.0f], nil];
     rotateAnimation.duration = 0.5f;
-    rotateAnimation.keyTimes = [NSArray arrayWithObjects:
-                                [NSNumber numberWithFloat:.3], 
-                                [NSNumber numberWithFloat:.4], nil]; 
+    rotateAnimation.keyTimes = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.3],  [NSNumber numberWithFloat:.4], nil];
     
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     positionAnimation.duration = 0.5f;
@@ -301,15 +301,28 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     CGPathAddLineToPoint(path, NULL, item.endPoint.x, item.endPoint.y); 
     positionAnimation.path = path;
     CGPathRelease(path);
-    
+
     CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
+    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, nil];
     animationgroup.duration = 0.5f;
     animationgroup.fillMode = kCAFillModeForwards;
     animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    [item.layer addAnimation:animationgroup forKey:@"Expand"];
+    [item.layer addAnimation:animationgroup forKey:@"Expand"]; // This key does not seem to be used, must just be a label
     item.center = item.endPoint;
-    
+
+  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  titleAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+  titleAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+  titleAnimation.duration = 0.5f;
+
+  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
+  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
+  animationgroup2.duration = 0.5f;
+  animationgroup2.fillMode = kCAFillModeForwards;
+  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
+  item.titleLabel.layer.opacity = 1.0f;
+
     _flag ++;
     
 }
@@ -344,14 +357,28 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     CGPathAddLineToPoint(path, NULL, item.startPoint.x, item.startPoint.y); 
     positionAnimation.path = path;
     CGPathRelease(path);
-    
+
     CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
+    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, nil];
     animationgroup.duration = 0.5f;
     animationgroup.fillMode = kCAFillModeForwards;
     animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
     [item.layer addAnimation:animationgroup forKey:@"Close"];
     item.center = item.startPoint;
+  
+  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  titleAnimation.fromValue = [NSNumber numberWithFloat:1.0f];
+  titleAnimation.toValue = [NSNumber numberWithFloat:0.0f];
+  titleAnimation.duration = 0.5f;
+  
+  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
+  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
+  animationgroup2.duration = 0.5f;
+  animationgroup2.fillMode = kCAFillModeForwards;
+  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
+  item.titleLabel.layer.opacity = 0.0f;
+
     _flag --;
 }
 

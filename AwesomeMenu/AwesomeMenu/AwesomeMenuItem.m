@@ -7,11 +7,15 @@
 //
 
 #import "AwesomeMenuItem.h"
+#import <QuartzCore/QuartzCore.h>
+
 static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.size.width - rect.size.width * n)/ 2, (rect.size.height - rect.size.height * n) / 2, rect.size.width * n, rect.size.height * n);}
+
 @implementation AwesomeMenuItem
 
 @synthesize contentImageView = _contentImageView;
-
+@synthesize title = _title;
+@synthesize titleLabel = _titleLabel;
 @synthesize startPoint = _startPoint;
 @synthesize endPoint = _endPoint;
 @synthesize nearPoint = _nearPoint;
@@ -19,28 +23,47 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 @synthesize delegate  = _delegate;
 
 #pragma mark - initialization & cleaning up
-- (id)initWithImage:(UIImage *)img 
-   highlightedImage:(UIImage *)himg
-       ContentImage:(UIImage *)cimg
-highlightedContentImage:(UIImage *)hcimg;
-{
-    if (self = [super init]) 
-    {
-        self.image = img;
-        self.highlightedImage = himg;
-        self.userInteractionEnabled = YES;
-        _contentImageView = [[UIImageView alloc] initWithImage:cimg];
-        _contentImageView.highlightedImage = hcimg;
-        [self addSubview:_contentImageView];
-    }
-    return self;
+
++ (id)menuItemWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg title:(NSString*)title {
+  AwesomeMenuItem* item = [[AwesomeMenuItem alloc] initWithImage:img highlightedImage:himg ContentImage:cimg highlightedContentImage:hcimg title:title];
+  [item autorelease];
+  return item;
 }
 
-- (void)dealloc
-{
+- (id)initWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg title:(NSString *)title {
+  if (self = [super init]) {
+    self.image = img;
+    self.highlightedImage = himg;
+    self.userInteractionEnabled = YES;
+    self.title = title;
+    _contentImageView = [[UIImageView alloc] initWithImage:cimg];
+    _contentImageView.highlightedImage = hcimg;
+    [self addSubview:_contentImageView];
+    
+    if (self.title) {
+      _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+      _titleLabel.font = [UIFont systemFontOfSize:14.0f];
+      _titleLabel.textAlignment = UITextAlignmentCenter;
+      _titleLabel.numberOfLines = 0;
+      _titleLabel.backgroundColor = [UIColor lightGrayColor];
+      _titleLabel.layer.cornerRadius = 5.0f;
+      _titleLabel.layer.opacity = 0.0f;
+      self.titleLabel.text = self.title;
+      [self addSubview:self.titleLabel];
+    }
+  }
+  return self;
+}
+
+- (id)initWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg {
+  return [self initWithImage:img highlightedImage:himg ContentImage:cimg highlightedContentImage:hcimg title:nil];
+}
+
+- (void)dealloc {
     [_contentImageView release];
     [super dealloc];
 }
+
 #pragma mark - UIView's methods
 - (void)layoutSubviews
 {
@@ -51,6 +74,12 @@ highlightedContentImage:(UIImage *)hcimg;
     float width = _contentImageView.image.size.width;
     float height = _contentImageView.image.size.height;
     _contentImageView.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
+  
+  if (self.titleLabel) {
+    CGSize textSize = [self.title sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(100, MAXFLOAT)  lineBreakMode:UILineBreakModeWordWrap];
+    _titleLabel.frame = CGRectMake(self.bounds.size.width/2 - textSize.width/2, _contentImageView.frame.origin.y+_contentImageView.frame.size.height+10, textSize.width, textSize.height);
+  }
+  
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event

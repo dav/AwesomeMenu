@@ -23,6 +23,9 @@
 
 @property (nonatomic, retain, readonly) UIImageView *contentImageView;
 
+@property (nonatomic, retain) NSString* title;
+@property (nonatomic, retain, readonly) UILabel* titleLabel;
+
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
 @property (nonatomic) CGPoint nearPoint;
@@ -30,10 +33,11 @@
 
 @property (nonatomic, assign) id<AwesomeMenuItemDelegate> delegate;
 
-- (id)initWithImage:(UIImage *)img 
-   highlightedImage:(UIImage *)himg
-       ContentImage:(UIImage *)cimg
-highlightedContentImage:(UIImage *)hcimg;
++ (AwesomeMenuItem*) menuItemWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg title:(NSString*)title;
+
+- (id)initWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg;
+- (id)initWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg title:(NSString*)title;
+
 
 
 @end
