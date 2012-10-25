@@ -272,9 +272,85 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 #pragma mark - private methods
 
-- (void)_expand
-{
-	
+- (void) addExpandAnimationsToMenuItem:(AwesomeMenuItem*) item {
+  CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+  rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:self.expandRotation],[NSNumber numberWithFloat:0.0f], nil];
+  rotateAnimation.duration = 0.5f;
+  rotateAnimation.keyTimes = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.3],  [NSNumber numberWithFloat:.4], nil];
+  
+  CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+  positionAnimation.duration = 0.5f;
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathMoveToPoint(path, NULL, item.startPoint.x, item.startPoint.y);
+  CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
+  CGPathAddLineToPoint(path, NULL, item.nearPoint.x, item.nearPoint.y);
+  CGPathAddLineToPoint(path, NULL, item.endPoint.x, item.endPoint.y);
+  positionAnimation.path = path;
+  CGPathRelease(path);
+  
+  CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
+  animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
+  animationgroup.duration = 0.5f;
+  animationgroup.fillMode = kCAFillModeForwards;
+  animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.layer addAnimation:animationgroup forKey:@"Expand"]; // This key does not seem to be used, must just be a label
+  item.center = item.endPoint;
+  
+  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  titleAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+  titleAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+  titleAnimation.duration = 0.5f;
+  
+  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
+  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
+  animationgroup2.duration = 0.5f;
+  animationgroup2.fillMode = kCAFillModeForwards;
+  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
+  item.titleLabel.layer.opacity = 1.0f;
+}
+
+- (void) addCloseAnimationToMenuItem:(AwesomeMenuItem*)item {
+  CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+  rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:self.closeRotation],[NSNumber numberWithFloat:0.0f], nil];
+  rotateAnimation.duration = 0.5f;
+  rotateAnimation.keyTimes = [NSArray arrayWithObjects:
+                              [NSNumber numberWithFloat:.0],
+                              [NSNumber numberWithFloat:.4],
+                              [NSNumber numberWithFloat:.5], nil];
+  
+  CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+  positionAnimation.duration = 0.5f;
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathMoveToPoint(path, NULL, item.endPoint.x, item.endPoint.y);
+  CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
+  CGPathAddLineToPoint(path, NULL, item.startPoint.x, item.startPoint.y);
+  positionAnimation.path = path;
+  CGPathRelease(path);
+  
+  CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
+  animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, rotateAnimation, nil];
+  animationgroup.duration = 0.5f;
+  animationgroup.fillMode = kCAFillModeForwards;
+  animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.layer addAnimation:animationgroup forKey:@"Close"];
+  item.center = item.startPoint;
+  
+  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  titleAnimation.fromValue = [NSNumber numberWithFloat:1.0f];
+  titleAnimation.toValue = [NSNumber numberWithFloat:0.0f];
+  titleAnimation.duration = 0.5f;
+  
+  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
+  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
+  animationgroup2.duration = 0.5f;
+  animationgroup2.fillMode = kCAFillModeForwards;
+  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
+  item.titleLabel.layer.opacity = 0.0f;
+}
+
+- (void)_expand {
     if (_flag == [_menusArray count])
     {
         _isAnimating = NO;
@@ -286,45 +362,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     
     int tag = 1000 + _flag;
     AwesomeMenuItem *item = (AwesomeMenuItem *)[self viewWithTag:tag];
-    
-    CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:expandRotation],[NSNumber numberWithFloat:0.0f], nil];
-    rotateAnimation.duration = 0.5f;
-    rotateAnimation.keyTimes = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.3],  [NSNumber numberWithFloat:.4], nil];
-    
-    CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    positionAnimation.duration = 0.5f;
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, item.startPoint.x, item.startPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.nearPoint.x, item.nearPoint.y); 
-    CGPathAddLineToPoint(path, NULL, item.endPoint.x, item.endPoint.y); 
-    positionAnimation.path = path;
-    CGPathRelease(path);
-
-    CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, nil];
-    animationgroup.duration = 0.5f;
-    animationgroup.fillMode = kCAFillModeForwards;
-    animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    [item.layer addAnimation:animationgroup forKey:@"Expand"]; // This key does not seem to be used, must just be a label
-    item.center = item.endPoint;
-
-  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-  titleAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
-  titleAnimation.toValue = [NSNumber numberWithFloat:1.0f];
-  titleAnimation.duration = 0.5f;
-
-  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
-  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
-  animationgroup2.duration = 0.5f;
-  animationgroup2.fillMode = kCAFillModeForwards;
-  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
-  item.titleLabel.layer.opacity = 1.0f;
-
+    [self addExpandAnimationsToMenuItem:item];
     _flag ++;
-    
 }
 
 - (void)_close
@@ -339,46 +378,8 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     }
     
     int tag = 1000 + _flag;
-     AwesomeMenuItem *item = (AwesomeMenuItem *)[self viewWithTag:tag];
-    
-    CAKeyframeAnimation *rotateAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotateAnimation.values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0f],[NSNumber numberWithFloat:closeRotation],[NSNumber numberWithFloat:0.0f], nil];
-    rotateAnimation.duration = 0.5f;
-    rotateAnimation.keyTimes = [NSArray arrayWithObjects:
-                                [NSNumber numberWithFloat:.0], 
-                                [NSNumber numberWithFloat:.4],
-                                [NSNumber numberWithFloat:.5], nil]; 
-        
-    CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    positionAnimation.duration = 0.5f;
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, item.endPoint.x, item.endPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.farPoint.x, item.farPoint.y);
-    CGPathAddLineToPoint(path, NULL, item.startPoint.x, item.startPoint.y); 
-    positionAnimation.path = path;
-    CGPathRelease(path);
-
-    CAAnimationGroup *animationgroup = [CAAnimationGroup animation];
-    animationgroup.animations = [NSArray arrayWithObjects:positionAnimation, nil];
-    animationgroup.duration = 0.5f;
-    animationgroup.fillMode = kCAFillModeForwards;
-    animationgroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    [item.layer addAnimation:animationgroup forKey:@"Close"];
-    item.center = item.startPoint;
-  
-  CABasicAnimation *titleAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-  titleAnimation.fromValue = [NSNumber numberWithFloat:1.0f];
-  titleAnimation.toValue = [NSNumber numberWithFloat:0.0f];
-  titleAnimation.duration = 0.5f;
-  
-  CAAnimationGroup *animationgroup2 = [CAAnimationGroup animation];
-  animationgroup2.animations = [NSArray arrayWithObjects:titleAnimation, nil];
-  animationgroup2.duration = 0.5f;
-  animationgroup2.fillMode = kCAFillModeForwards;
-  animationgroup2.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-  [item.titleLabel.layer addAnimation:animationgroup2 forKey:@"Expand"];
-  item.titleLabel.layer.opacity = 0.0f;
-
+    AwesomeMenuItem *item = (AwesomeMenuItem *)[self viewWithTag:tag];
+    [self addCloseAnimationToMenuItem:item];
     _flag --;
 }
 

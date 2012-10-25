@@ -41,18 +41,23 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     [self addSubview:_contentImageView];
     
     if (self.title) {
-      _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-      _titleLabel.font = [UIFont systemFontOfSize:14.0f];
-      _titleLabel.textAlignment = UITextAlignmentCenter;
-      _titleLabel.numberOfLines = 0;
-      _titleLabel.backgroundColor = [UIColor lightGrayColor];
-      _titleLabel.layer.cornerRadius = 5.0f;
-      _titleLabel.layer.opacity = 0.0f;
+      _titleLabel = [self newTitleLabel];
       self.titleLabel.text = self.title;
       [self addSubview:self.titleLabel];
     }
   }
   return self;
+}
+
+- (UILabel*) newTitleLabel {
+  UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
+  label.font = [UIFont systemFontOfSize:14.0f];
+  label.textAlignment = UITextAlignmentCenter;
+  label.numberOfLines = 0;
+  label.backgroundColor = [UIColor lightGrayColor];
+  label.layer.cornerRadius = 5.0f;
+  label.layer.opacity = 0.0f;
+  return label;
 }
 
 - (id)initWithImage:(UIImage *)img highlightedImage:(UIImage *)himg ContentImage:(UIImage *)cimg highlightedContentImage:(UIImage *)hcimg {
