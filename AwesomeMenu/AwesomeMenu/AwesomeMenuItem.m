@@ -52,7 +52,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 - (UILabel*) newTitleLabel {
   UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
   label.font = [UIFont systemFontOfSize:14.0f];
-  label.textAlignment = UITextAlignmentCenter;
+  label.textAlignment = NSTextAlignmentCenter;
   label.numberOfLines = 0;
   label.backgroundColor = [UIColor lightGrayColor];
   label.layer.cornerRadius = 5.0f;
@@ -81,7 +81,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
     _contentImageView.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
   
   if (self.titleLabel) {
-    CGSize textSize = [self.title sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(100, MAXFLOAT)  lineBreakMode:UILineBreakModeWordWrap];
+    CGSize textSize = [self.title sizeWithFont:self.titleLabel.font constrainedToSize:CGSizeMake(100, MAXFLOAT)  lineBreakMode:NSLineBreakByWordWrapping];
     _titleLabel.frame = CGRectMake(self.bounds.size.width/2 - textSize.width/2, _contentImageView.frame.origin.y+_contentImageView.frame.size.height+10, textSize.width, textSize.height);
   }
   
